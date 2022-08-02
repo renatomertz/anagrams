@@ -14,6 +14,6 @@ func (ss *searchStrategy) AddStrategy(ws wordsStrategy) {
 	ss.wordsStrategy = ws
 }
 
-func (ss *searchStrategy) FindWords() model.Result {
+func (ss *searchStrategy) FindWords() chan model.Result {
 	return ss.wordsStrategy.getWords()
 }

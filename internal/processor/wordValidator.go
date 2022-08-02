@@ -12,7 +12,7 @@ import (
 const uriBase string = "https://www.dicio.com.br/%s"
 
 func isValidWord(word string) bool {
-	body := dictionaryLookup(word)
+	body := getdWordInictionary(word)
 	bodyString := getBodyStringFormat(body)
 	return foundWord(bodyString)
 }
@@ -30,7 +30,7 @@ func getBodyStringFormat(resp *http.Response) string {
 	return bodyString
 }
 
-func dictionaryLookup(word string) *http.Response {
+func getdWordInictionary(word string) *http.Response {
 	wordLowerCase := strings.ToLower(word)
 
 	url := fmt.Sprintf(uriBase, wordLowerCase)

@@ -18,16 +18,21 @@ func NewProcessorParallel(wordsDictionary []string, notWordsDictionary []string,
 	}
 }
 
-func worker(wordsDictionary []string, notWordsDictionary []string, words []string, result chan<- model.Result) {
-	result <- processPermutations(words, wordsDictionary, notWordsDictionary)
+func worker(wordsDictionary []string, notWordsDictionary []string, work <-chan []string, result chan<- model.Result) {
+	result <- processPermutations(<-work, wordsDictionary, notWordsDictionary)
 }
 
-func (p *processorParallel) getWords() model.Result {
+func (p *processorParallel) getWords() chan model.Result {
 	chunks := getChunks(p.words)
-	channelResult := make(chan model.Result)
+	result := make(chan model.Result)
+	jobs := make(chan []string)
 
 	for _, chunk := range chunks {
-		go worker(p.wordsDictionary, p.notWordsDictionary, chunk, channelResult)
+		go worker(p.wordsDictionary, p.notWordsDictionary, jobs, result)
+		jobs <- chunk
 	}
-	return <-channelResult
+
+	close(jobs)
+
+	return result
 }

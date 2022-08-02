@@ -31,18 +31,19 @@ func ProcessParallelVersion(str []string) {
 
 	searchWords := processor.NewStrategy()
 	searchWords.AddStrategy(wordsInParallel)
-	result := searchWords.FindWords()
+	//result := searchWords.FindWords()
+	channel := searchWords.FindWords()
 
 	//channel := processor.ParallelProcessingPermutations(wordsDictionary, notWordsDictionary, possibleWords)
-	//for result := range channel {
-	fmt.Println(result.FoundWords)
-	errW := file.WriteContentFile(result.NewWords, path_words_dictionary)
-	if errW != nil {
-		log.Fatalf("Erro:", errW)
+	for result := range channel {
+		fmt.Println(result.FoundWords)
+		errW := file.WriteContentFile(result.NewWords, path_words_dictionary)
+		if errW != nil {
+			log.Fatalf("Erro:", errW)
+		}
+		errR := file.WriteContentFile(result.NewNotWords, path_not_words_dictionary)
+		if err != nil {
+			log.Fatalf("Erro:", errR)
+		}
 	}
-	errR := file.WriteContentFile(result.NewNotWords, path_not_words_dictionary)
-	if err != nil {
-		log.Fatalf("Erro:", errR)
-	}
-	//}
 }
